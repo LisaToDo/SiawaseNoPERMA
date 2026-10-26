@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#CBFCC0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="幸せのPERMA">
+<title>幸せのPERMA · 把幸福装进玻璃瓶</title>
+<style>
+:root{
+  --green:#CBFCC0;
+  --pink:#F9B2C0;
+  --green-deep:#4FA868;
+  --pink-deep:#E06D92;
+  --text:#3D5245;
+  --text-soft:#7A8A80;
+  --text-warm:#9C6272;
+  --glass:rgba(255,255,255,.52);
+  --glass-strong:rgba(255,255,255,.72);
+  --glass-border:rgba(255,255,255,.8);
+  --c-P:#F27BA0;
+  --c-E:#5CC97E;
+  --c-R:#3FB8A8;
+  --c-M:#B98AE0;
+  --c-A:#F0A85E;
+  --radius:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  color:var(--text);
+  background:linear-gradient(168deg,#CBFCC0 0%,#DFF4CE 28%,#F2ECCF 55%,#F9D3C6 80%,#F9B2C0 100%);
+  background-attachment:fixed;
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;}
+.blob.b1{width:46vmax;height:46vmax;left:-14vmax;top:-12vmax;background:#A8F58F;animation:drift 26s ease-in-out infinite alternate;}
+.blob.b2{width:40vmax;height:40vmax;right:-12vmax;top:24vh;background:#FBC4D2;animation:drift 32s ease-in-out infinite alternate-reverse;}
+.blob.b3{width:34vmax;height:34vmax;left:8vw;bottom:-14vmax;background:#FFE9C9;animation:drift 38s ease-in-out infinite alternate;}
+@keyframes drift{from{transform:translate(0,0) scale(1);}to{transform:translate(6vmax,4vmax) scale(1.12);}}
+
+#app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom));}
+@media(min-width:900px){#app{max-width:640px;}}
+
+.view{display:none;animation:fadeUp .38s ease both;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+header.brand{padding:26px 6px 14px;text-align:center;}
+header.brand h1{font-size:26px;font-weight:700;letter-spacing:1px;color:var(--text);text-shadow:0 1px 0 rgba(255,255,255,.6);}
+header.brand h1 .jp{color:var(--pink-deep);}
+header.brand p{margin-top:6px;font-size:13px;color:var(--text-warm);letter-spacing:3px;}
+
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(22px) saturate(1.3);
+  -webkit-backdrop-filter:blur(22px) saturate(1.3);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  box-shadow:0 8px 32px rgba(160,120,110,.13), inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+.section-title{font-size:14px;font-weight:600;color:var(--text);margin:18px 6px 10px;display:flex;align-items:center;gap:8px;}
+.section-title .sub{font-weight:400;font-size:12px;color:var(--text-soft);}
+
+.summary{padding:14px 16px;display:flex;gap:10px;}
+.sum-item{flex:1;text-align:center;}
+.sum-item .ring{width:40px;height:40px;margin:0 auto 6px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;}
+.sum-item .num{font-size:15px;font-weight:600;}
+.sum-item .lbl{font-size:11px;color:var(--text-soft);margin-top:1px;}
+
+.month-label{margin:20px 6px 10px;font-size:13px;color:var(--text-soft);display:flex;align-items:center;gap:10px;}
+.month-label::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.75);}
+
+.post{padding:16px 18px;margin-bottom:14px;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease;animation:fadeUp .4s ease both;}
+.post:active{transform:scale(.975);}
+@media(hover:hover){.post:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(160,120,110,.2), inset 0 1px 0 rgba(255,255,255,.85);}}
+.post-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.post-date{font-size:15px;font-weight:600;}
+.post-dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);}
+.post-item{display:flex;gap:8px;margin:6px 0;align-items:flex-start;}
+.post-item .tag{flex:none;font-size:11px;color:#fff;border-radius:8px;padding:2px 7px;margin-top:1px;}
+.post-item .txt{font-size:13.5px;line-height:1.6;color:var(--text);}
+.more-hint{font-size:12px;color:var(--text-soft);margin-top:8px;}
+
+.empty{padding:44px 24px;text-align:center;color:var(--text-soft);}
+.empty .bottle{font-size:44px;margin-bottom:12px;}
+.empty p{font-size:13.5px;line-height:1.8;}
+
+.fab{
+  position:fixed;right:max(20px,calc(50vw - 260px));bottom:calc(84px + env(safe-area-inset-bottom));
+  width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;z-index:20;
+  background:linear-gradient(135deg,#F9B2C0,#F27BA0);
+  color:#fff;font-size:30px;font-weight:300;line-height:1;
+  box-shadow:0 10px 28px rgba(226,109,146,.45), inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .18s ease;
+}
+.fab:active{transform:scale(.9);}
+
+.tabbar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:20;
+  width:min(340px,calc(100vw - 40px));
+  display:flex;border-radius:26px;overflow:hidden;
+  background:var(--glass-strong);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border);
+  box-shadow:0 10px 32px rgba(160,120,110,.2);
+}
+.tab{flex:1;border:none;background:transparent;padding:12px 0 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-soft);font-size:11px;transition:color .2s;}
+.tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.tab.active{color:var(--pink-deep);font-weight:600;}
+
+.create-head{display:flex;align-items:center;gap:12px;padding:22px 4px 14px;}
+.icon-btn{width:38px;height:38px;border-radius:14px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer;font-size:17px;color:var(--text);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
+.icon-btn:active{transform:scale(.9);}
+.create-head .prog{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.55);overflow:hidden;}
+.create-head .prog i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green-deep),var(--pink-deep));transition:width .35s ease;}
+.create-head .step-num{font-size:12px;color:var(--text-soft);min-width:34px;text-align:right;}
+
+.qcard{padding:26px 22px;}
+.q-el{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.q-badge{width:34px;height:34px;border-radius:12px;color:#fff;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.q-el .name{font-size:13px;color:var(--text-soft);}
+.q-title{font-size:20px;font-weight:600;line-height:1.5;margin:10px 0 16px;}
+.q-tip{font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.7;}
+
+textarea{
+  width:100%;min-height:130px;resize:none;border:1px solid rgba(255,255,255,.85);border-radius:16px;
+  background:rgba(255,255,255,.6);padding:14px;font-size:14.5px;line-height:1.7;color:var(--text);
+  font-family:inherit;outline:none;transition:box-shadow .2s;
+}
+textarea:focus{box-shadow:0 0 0 3px rgba(249,178,192,.4);background:rgba(255,255,255,.8);}
+textarea::placeholder{color:#A9B5AC;}
+
+.btn-row{display:flex;gap:12px;margin-top:22px;}
+.btn{flex:1;border:none;border-radius:18px;padding:14px 0;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s ease,opacity .2s;font-family:inherit;}
+.btn:active{transform:scale(.96);}
+.btn-ghost{background:rgba(255,255,255,.55);color:var(--text);border:1px solid rgba(255,255,255,.9);}
+.btn-primary{background:linear-gradient(135deg,#8FD99B,#F9B2C0);color:#fff;box-shadow:0 8px 22px rgba(143,180,150,.45);}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;}
+.btn-danger{background:linear-gradient(135deg,#F27BA0,#E05C86);color:#fff;}
+
+.review-row{display:flex;gap:10px;padding:12px 0;border-bottom:1px dashed rgba(255,255,255,.8);align-items:flex-start;}
+.review-row:last-child{border-bottom:none;}
+.review-row .tag{flex:none;font-size:11px;color:#fff;border-radius:8px;padding:2px 7px;margin-top:2px;}
+.review-row .txt{font-size:13.5px;line-height:1.6;flex:1;}
+.review-row .empty-txt{color:#A9B5AC;font-style:italic;}
+
+.modal-mask{position:fixed;inset:0;background:rgba(90,70,80,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:40;display:none;align-items:flex-end;justify-content:center;animation:fade .25s ease;}
+.modal-mask.show{display:flex;}
+@keyframes fade{from{opacity:0;}to{opacity:1;}}
+.modal{
+  width:min(560px,100%);max-height:84dvh;overflow-y:auto;
+  border-radius:28px 28px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));
+  background:var(--glass-strong);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);
+  border:1px solid var(--glass-border);border-bottom:none;
+  animation:slideUp .32s cubic-bezier(.2,.9,.3,1.1) both;
+}
+@media(min-width:700px){.modal-mask{align-items:center;}.modal{border-radius:28px;border-bottom:1px solid var(--glass-border);}}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0;}to{transform:none;opacity:1;}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.modal-head h3{font-size:16px;}
+.close-x{border:none;background:rgba(255,255,255,.6);width:32px;height:32px;border-radius:12px;cursor:pointer;font-size:15px;color:var(--text);}
+
+.detail-item{margin:12px 0;}
+.detail-item .head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.detail-item .tag{font-size:11px;color:#fff;border-radius:8px;padding:2px 8px;}
+.detail-item p{font-size:14px;line-height:1.7;}
+.detail-item .skip{color:#A9B5AC;font-style:italic;font-size:13px;}
+
+.edit-block{margin:12px 0;}
+.edit-block .head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.edit-block textarea{min-height:64px;font-size:13.5px;}
+
+.report-top{display:flex;gap:10px;margin:4px 0 14px;}
+.seg{flex:1;border:none;border-radius:16px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.45);color:var(--text-soft);border:1px solid rgba(255,255,255,.7);transition:all .2s;font-family:inherit;}
+.seg.active{background:var(--glass-strong);color:var(--pink-deep);box-shadow:0 4px 14px rgba(160,120,110,.15);}
+.radar-wrap{padding:20px;display:flex;flex-direction:column;align-items:center;}
+.radar-wrap h3{font-size:15px;margin-bottom:4px;}
+.radar-wrap .period{font-size:12px;color:var(--text-soft);margin-bottom:8px;}
+canvas#radar{width:100%;max-width:320px;height:auto;}
+.el-stats{padding:6px 18px;}
+.el-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed rgba(255,255,255,.75);}
+.el-row:last-child{border-bottom:none;}
+.el-row .tag{flex:none;width:30px;height:30px;border-radius:11px;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.el-row .name{flex:none;width:58px;font-size:13px;}
+.el-row .bar{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.6);overflow:hidden;}
+.el-row .bar i{display:block;height:100%;border-radius:4px;transition:width .6s ease;}
+.el-row .val{flex:none;font-size:12.5px;color:var(--text-soft);min-width:58px;text-align:right;}
+
+.bottles{display:flex;gap:12px;padding:16px;justify-content:space-between;}
+.bottle-col{flex:1;text-align:center;}
+.bottle-svg{width:34px;height:52px;margin:0 auto 6px;display:block;}
+.bottle-col .cnt{font-size:12px;font-weight:600;}
+.bottle-col .nm{font-size:10.5px;color:var(--text-soft);}
+
+.poster-btn{width:100%;margin-top:18px;}
+.confirm-body{font-size:14px;line-height:1.7;color:var(--text);padding:6px 2px 18px;}
+.toast{
+  position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:rgba(61,82,69,.88);color:#fff;font-size:13px;padding:10px 20px;border-radius:20px;z-index:60;
+  opacity:0;pointer-events:none;transition:all .3s ease;backdrop-filter:blur(8px);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.shake{animation:shake .4s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.footer-note{text-align:center;font-size:11px;color:var(--text-soft);padding:26px 0 8px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div id="app">
+  <div id="view-home" class="view active">
+    <header class="brand">
+      <h1><span class="jp">幸せ</span>のPERMA</h1>
+      <p>把幸福装进玻璃瓶</p>
+    </header>
+    <div class="section-title">本月五要素 <span class="sub" id="sum-month"></span></div>
+    <div class="summary glass" id="summary"></div>
+    <div class="section-title">玻璃瓶收藏 <span class="sub" id="total-count"></span></div>
+    <div id="timeline"></div>
+    <p class="footer-note">PERMA · 积极心理学 · Seligman</p>
+  </div>
+
+  <div id="view-create" class="view">
+    <div class="create-head">
+      <button class="icon-btn" id="create-back">×</button>
+      <div class="prog"><i id="prog-fill"></i></div>
+      <span class="step-num" id="step-num"></span>
+    </div>
+    <div id="create-body"></div>
+  </div>
+
+  <div id="view-report" class="view">
+    <header class="brand"><h1 style="font-size:21px;">幸福平衡轮</h1><p>你的幸福，正在结晶</p></header>
+    <div class="report-top">
+      <button class="seg active" data-days="7">近 7 天</button>
+      <button class="seg" data-days="30">近 30 天</button>
+    </div>
+    <div class="radar-wrap glass">
+      <h3>PERMA 五边形</h3>
+      <div class="period" id="radar-period"></div>
+      <canvas id="radar" width="640" height="600"></canvas>
+    </div>
+    <div class="section-title">要素概览</div>
+    <div class="el-stats glass" id="el-stats"></div>
+    <div class="section-title">五色玻璃瓶 <span class="sub">每 10 满一格光泽</span></div>
+    <div class="bottles glass" id="bottles"></div>
+    <button class="btn btn-primary poster-btn" id="btn-poster">生成粉绿海报 · 保存分享</button>
+    <div class="section-title">数据与安装</div>
+    <div class="glass" style="padding:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" id="btn-export" style="flex:1;min-width:130px;">导出备份 JSON</button>
+      <button class="btn btn-ghost" id="btn-import" style="flex:1;min-width:130px;">导入备份</button>
+      <button class="btn btn-primary" id="btn-install" style="flex:1;min-width:130px;display:none;">安装到手机桌面</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none;">
+      <p style="flex-basis:100%;font-size:11.5px;color:var(--text-soft);line-height:1.7;margin:2px 2px 0;">数据保存在本机浏览器。建议偶尔导出 JSON 备份；换手机时用「导入备份」即可迁移。</p>
+    </div>
+    <p class="footer-note">数据保存在本机浏览器 · 导出 JSON 备份见设置</p>
+  </div>
+</div>
+
+<button class="fab" id="fab" title="创建今日玻璃珠">+</button>
+
+<nav class="tabbar">
+  <button class="tab active" data-view="home">
+    <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg>首页
+  </button>
+  <button class="tab" data-view="report">
+    <svg viewBox="0 0 24 24"><path d="M12 3 14.6 9.2 21 9.8 16.2 14.2 17.6 20.6 12 17.2 6.4 20.6 7.8 14.2 3 9.8 9.4 9.2Z"/></svg>平衡轮
+  </button>
+</nav>
+
+<div class="modal-mask" id="modal-mask">
+  <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const ELEMENTS = [
+  {key:"P", name:"积极情绪", color:"#F27BA0", q:"今天有什么让你微笑的瞬间？", tip:"一顿好饭、一缕阳光、一首歌……小小的也值得记录。"},
+  {key:"E", name:"投入",     color:"#5CC97E", q:"今天你做什么事时忘记了时间？", tip:"心流出现的时刻，往往藏着你真正热爱的事。"},
+  {key:"R", name:"人际关系", color:"#3FB8A8", q:"今天你和谁产生了温暖的连接？", tip:"一句问候、一次倾听，都是关系的养分。"},
+  {key:"M", name:"意义",     color:"#B98AE0", q:"今天做的哪件事对你很重要？", tip:"不必宏大，与你珍视的东西有关就有意义。"},
+  {key:"A", name:"成就",     color:"#F0A85E", q:"今天你完成或推进了什么？", tip:"哪怕只前进了一小步，也请为自己记下。"}
+];
+const STORE_POSTS = "perma_posts_v1";
+const STORE_DRAFT = "perma_draft_v1";
+const WEEKDAYS = ["日","一","二","三","四","五","六"];
+
+let posts = [];
+try{ posts = JSON.parse(localStorage.getItem(STORE_POSTS) || "[]"); }catch(e){ posts = []; }
+
+const $ = s => document.querySelector(s);
+const savePosts = () => localStorage.setItem(STORE_POSTS, JSON.stringify(posts));
+
+function showToast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove("show"), 1800);
+}
+function fmtDate(iso){
+  const d = new Date(iso);
+  return {md:(d.getMonth()+1)+" 月 "+d.getDate()+" 日", wk:"周"+WEEKDAYS[d.getDay()], ym:d.getFullYear()+" 年 "+(d.getMonth()+1)+" 月"};
+}
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/\n/g,"<br>"); }
+
+/* ---------- views ---------- */
+function showView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $("#view-"+name).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.view===name));
+  $("#fab").style.display = name==="create" ? "none" : "flex";
+  window.scrollTo({top:0});
+  if(name==="home") renderHome();
+  if(name==="report") renderReport();
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>showView(t.dataset.view)));
+$("#fab").addEventListener("click",()=>{ startCreate(); showView("create"); });
+
+/* ---------- home ---------- */
+function renderHome(){
+  const now = new Date();
+  const thisMonth = posts.filter(p=>{ const d=new Date(p.createdAt); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth(); });
+  $("#sum-month").textContent = now.getFullYear()+" 年 "+(now.getMonth()+1)+" 月";
+  $("#summary").innerHTML = ELEMENTS.map(e=>{
+    const arr = thisMonth.flatMap(p=>p.entries).filter(x=>x.element===e.key && x.answer && x.answer.trim());
+    return '<div class="sum-item"><div class="ring" style="background:'+e.color+'">'+e.key+'</div><div class="num">'+arr.length+'</div><div class="lbl">'+e.name+'</div></div>';
+  }).join("");
+  $("#total-count").textContent = "共 "+posts.length+" 颗玻璃珠";
+
+  const tl = $("#timeline");
+  if(!posts.length){
+    tl.innerHTML = '<div class="empty glass"><div class="bottle">🫙</div><p>玻璃瓶还空着。<br>点右下角的 + ，装进今天的第一份幸福吧。</p></div>';
+    return;
+  }
+  const sorted = posts.slice().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+  let html = "", lastYm = "";
+  sorted.forEach(p=>{
+    const f = fmtDate(p.createdAt);
+    if(f.ym !== lastYm){ html += '<div class="month-label">'+f.ym+'</div>'; lastYm = f.ym; }
+    const dots = ELEMENTS.map(e=>{
+      const it = p.entries.find(x=>x.element===e.key);
+      const on = it && it.answer && it.answer.trim();
+      return '<div class="dot" style="'+(on?'background:'+e.color+';box-shadow:0 0 6px '+e.color+'66;':'')+'"></div>';
+    }).join("");
+    const items = p.entries.filter(x=>x.answer && x.answer.trim()).slice(0,3).map(x=>{
+      const e = ELEMENTS.find(el=>el.key===x.element);
+      const body = x.answer.length>42 ? x.answer.slice(0,42)+"…" : x.answer;
+      return '<div class="post-item"><span class="tag" style="background:'+e.color+'">'+e.key+' '+e.name+'</span><span class="txt">'+esc(body)+'</span></div>';
+    }).join("");
+    const more = p.entries.filter(x=>x.answer && x.answer.trim()).length > 3 ? '<div class="more-hint">还有更多 · 点开玻璃珠查看全部</div>' : "";
+    html += '<div class="post glass" data-id="'+p.id+'"><div class="post-head"><span class="post-date">'+f.md+' '+f.wk+'</span><div class="post-dots">'+dots+'</div></div>'+items+more+'</div>';
+  });
+  tl.innerHTML = html;
+  tl.querySelectorAll(".post").forEach(el=>el.addEventListener("click",()=>openPost(el.dataset.id)));
+}
+
+/* ---------- detail / edit ---------- */
+let editingId = null;
+function openModal(html){ $("#modal").innerHTML = html; $("#modal-mask").classList.add("show"); }
+function closeModal(){ $("#modal-mask").classList.remove("show"); editingId = null; }
+$("#modal-mask").addEventListener("click",e=>{ if(e.target.id==="modal-mask") closeModal(); });
+
+function openPost(id){
+  const p = posts.find(x=>x.id===id); if(!p) return;
+  const f = fmtDate(p.createdAt);
+  const items = ELEMENTS.map(e=>{
+    const it = p.entries.find(x=>x.element===e.key) || {};
+    const body = it.answer && it.answer.trim() ? "<p>"+esc(it.answer)+"</p>" : '<p class="skip">这一天没有回答这一问。</p>';
+    return '<div class="detail-item"><div class="head"><span class="tag" style="background:'+e.color+'">'+e.key+' '+e.name+'</span></div>'+body+'</div>';
+  }).join("");
+  openModal(
+    '<div class="modal-head"><h3>'+f.md+' '+f.wk+' · 玻璃珠</h3><button class="close-x" onclick="closeModal()">×</button></div>'
+    + items
+    + '<div class="btn-row"><button class="btn btn-ghost" id="m-edit">编辑</button><button class="btn btn-danger" id="m-del">删除</button></div>'
+  );
+  $("#m-edit").addEventListener("click",()=>openEdit(id));
+  $("#m-del").addEventListener("click",()=>confirmDelete(id));
+}
+function openEdit(id){
+  const p = posts.find(x=>x.id===id); if(!p) return;
+  editingId = id;
+  const blocks = ELEMENTS.map(e=>{
+    const it = p.entries.find(x=>x.element===e.key) || {};
+    return '<div class="edit-block"><div class="head"><span class="tag" style="background:'+e.color+'">'+e.key+' '+e.name+'</span></div><textarea data-el="'+e.key+'" placeholder="'+e.q+'">'+esc2(it.answer||"")+'</textarea></div>';
+  }).join("");
+  openModal(
+    '<div class="modal-head"><h3>重新打磨这颗玻璃珠</h3><button class="close-x" onclick="closeModal()">×</button></div>'
+    + blocks
+    + '<div class="btn-row"><button class="btn btn-primary" id="m-save">保存修改</button></div>'
+  );
+  $("#m-save").addEventListener("click",()=>{
+    const target = posts.find(x=>x.id===editingId); if(!target) return;
+    $("#modal").querySelectorAll("textarea[data-el]").forEach(t=>{
+      const it = target.entries.find(x=>x.element===t.dataset.el);
+      it.answer = t.value.trim();
+      delete it.score;
+    });
+    target.editedAt = new Date().toISOString();
+    savePosts(); closeModal(); showToast("玻璃珠已重新结晶 ✨");
+  });
+}
+function esc2(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function confirmDelete(id){
+  openModal(
+    '<div class="modal-head"><h3>确认删除</h3><button class="close-x" onclick="closeModal()">×</button></div>'
+    + '<div class="confirm-body">这颗玻璃珠将被打碎，无法恢复。<br><b>⚠️ 此操作不可撤销</b>，确定要删除吗？</div>'
+    + '<div class="btn-row"><button class="btn btn-ghost" onclick="closeModal()">再想想</button><button class="btn btn-danger" id="m-del-yes">打碎它</button></div>'
+  );
+  $("#m-del-yes").addEventListener("click",()=>{
+    posts = posts.filter(x=>x.id!==id);
+    savePosts(); closeModal(); renderHome(); showToast("已删除");
+  });
+}
+
+/* ---------- create ---------- */
+let draft = null;
+function loadDraft(){
+  try{ const d = JSON.parse(localStorage.getItem(STORE_DRAFT)||"null");
+    if(d && Array.isArray(d.entries) && d.entries.length===5) return d;
+  }catch(e){}
+  return {step:0, entries:ELEMENTS.map(e=>({element:e.key, answer:""}))};
+}
+function startCreate(){ draft = loadDraft(); renderCreateStep(); }
+function saveDraft(){ localStorage.setItem(STORE_DRAFT, JSON.stringify(draft)); }
+function clearDraft(){ localStorage.removeItem(STORE_DRAFT); draft = null; }
+
+$("#create-back").addEventListener("click",()=>{ showView("home"); });
+
+function renderCreateStep(){
+  const s = draft.step;
+  $("#prog-fill").style.width = ((s+1)/6*100)+"%";
+  $("#step-num").textContent = Math.min(s+1,6)+" / 6";
+  const body = $("#create-body");
+  if(s < 5){
+    const e = ELEMENTS[s], it = draft.entries[s];
+    body.innerHTML =
+      '<div class="qcard glass">'
+      + '<div class="q-el"><div class="q-badge" style="background:'+e.color+'">'+e.key+'</div><span class="name">'+e.name+' · Positive Psychology</span></div>'
+      + '<div class="q-title">'+e.q+'</div>'
+      + '<textarea id="q-text" placeholder="轻轻写下此刻想起的那件事……">'+esc2(it.answer)+'</textarea>'
+      + '<div class="q-tip">'+e.tip+'</div>'
+      + '<div class="btn-row">'
+      + (s>0?'<button class="btn btn-ghost" id="q-prev">上一步</button>':'<button class="btn btn-ghost" id="q-prev" style="visibility:hidden">上一步</button>')
+      + '<button class="btn btn-primary" id="q-next">'+(s===4?'看一看全部':'下一步')+'</button>'
+      + '</div></div>';
+    $("#q-text").addEventListener("input",ev=>{ it.answer = ev.target.value; saveDraft(); });
+    $("#q-prev").addEventListener("click",()=>{ draft.step--; saveDraft(); renderCreateStep(); });
+    $("#q-next").addEventListener("click",()=>{ draft.step++; saveDraft(); renderCreateStep(); });
+  }else{
+    const rows = ELEMENTS.map((e,i)=>{
+      const it = draft.entries[i];
+      const txt = it.answer.trim() ? esc(it.answer.length>60?it.answer.slice(0,60)+"…":it.answer) : '<span class="empty-txt">留空</span>';
+      return '<div class="review-row"><span class="tag" style="background:'+e.color+'">'+e.key+' '+e.name+'</span><span class="txt">'+txt+'</span></div>';
+    }).join("");
+    const filled = draft.entries.filter(x=>x.answer.trim()).length;
+    body.innerHTML =
+      '<div class="qcard glass">'
+      + '<div class="q-title" style="margin-top:0;">这是今天的幸福形状</div>'
+      + rows
+      + (filled<3?'<div class="q-tip" id="warn" style="color:var(--pink-deep);">至少填写 3 问，玻璃珠才能成型哦（当前 '+filled+' 问）。</div>':'<div class="q-tip">确认无误，就把它封进玻璃瓶吧。</div>')
+      + '<div class="btn-row"><button class="btn btn-ghost" id="q-prev">返回修改</button><button class="btn btn-primary" id="q-submit" '+(filled<3?'disabled':'')+'>封存玻璃珠</button></div>'
+      + '</div>';
+    $("#q-prev").addEventListener("click",()=>{ draft.step=4; saveDraft(); renderCreateStep(); });
+    $("#q-submit").addEventListener("click",submitPost);
+  }
+}
+function submitPost(){
+  const post = {
+    id: "p" + Date.now(),
+    createdAt: new Date().toISOString(),
+    editedAt: null,
+    entries: draft.entries.map(x=>({element:x.element, answer:x.answer.trim()}))
+  };
+  posts.push(post); savePosts(); clearDraft();
+  showView("home"); showToast("已装进玻璃瓶 🫙");
+}
+
+/* ---------- report ---------- */
+let reportDays = 7;
+document.querySelectorAll(".seg").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".seg").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); reportDays = +b.dataset.days; renderReport();
+}));
+
+function periodPosts(){
+  const from = Date.now() - reportDays*86400000;
+  return posts.filter(p=> new Date(p.createdAt).getTime() >= from);
+}
+function periodStats(){
+  const list = periodPosts();
+  const st = {};
+  ELEMENTS.forEach(e=>{ st[e.key] = {count:0}; });
+  list.forEach(p=>p.entries.forEach(x=>{
+    if(x.answer && x.answer.trim()){ st[x.element].count++; }
+  }));
+  return {list, st};
+}
+function renderReport(){
+  const {list, st} = periodStats();
+  $("#radar-period").textContent = reportDays===7 ? "过去 7 天 · "+list.length+" 颗玻璃珠" : "过去 30 天 · "+list.length+" 颗玻璃珠";
+  const maxC = Math.max(1, ...ELEMENTS.map(e=>st[e.key].count));
+  drawRadar(ELEMENTS.map(e=>st[e.key].count/maxC*5), ELEMENTS.map(e=>st[e.key].count));
+  $("#el-stats").innerHTML = ELEMENTS.map(e=>{
+    const pct = Math.round(st[e.key].count/maxC*100);
+    return '<div class="el-row"><span class="tag" style="background:'+e.color+'">'+e.key+'</span><span class="name">'+e.name+'</span>'
+      + '<div class="bar"><i style="width:'+pct+'%;background:linear-gradient(90deg,'+e.color+'99,'+e.color+');"></i></div>'
+      + '<span class="val">'+(st[e.key].count?st[e.key].count+" 次回答":"暂无记录")+'</span></div>';
+  }).join("");
+  const totals = {};
+  ELEMENTS.forEach(e=>{ totals[e.key] = posts.flatMap(p=>p.entries).filter(x=>x.element===e.key && x.answer && x.answer.trim()).length; });
+  $("#bottles").innerHTML = ELEMENTS.map(e=>{
+    const c = totals[e.key];
+    const level = Math.min(3, Math.floor(c/10)+ (c>0?1:0));
+    const fillH = c>0 ? (18 + level*9) : 0;
+    const glow = level>=3 ? ' style="filter:drop-shadow(0 0 4px '+e.color+');"' : "";
+    return '<div class="bottle-col">'
+      + '<svg class="bottle-svg" viewBox="0 0 34 52"'+glow+'>'
+      + '<rect x="12" y="2" width="10" height="6" rx="2" fill="none" stroke="#8FA79A" stroke-width="1.6"/>'
+      + '<path d="M12 8 C12 13 5 16 5 24 L5 44 C5 48 8 50 12 50 L22 50 C26 50 29 48 29 44 L29 24 C29 16 22 13 22 8 Z" fill="rgba(255,255,255,.55)" stroke="#8FA79A" stroke-width="1.6"/>'
+      + (fillH>0 ? '<rect x="7.5" y="'+(50-fillH)+'" width="19" height="'+fillH+'" rx="4" fill="'+e.color+'" opacity=".8"/>' : "")
+      + '</svg>'
+      + '<div class="cnt">'+c+' 滴</div><div class="nm">'+e.name+'</div></div>';
+  }).join("");
+}
+function drawRadar(values, labels){
+  const LW = 640, LH = 600;
+  const cv = $("#radar"), ctx = cv.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = LW*dpr; cv.height = LH*dpr;
+  cv.style.width = "100%"; cv.style.maxWidth = "320px"; cv.style.height = "auto";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W = LW, H = LH, cx = W/2, cy = H/2 + 8, R = Math.min(W,H)/2 - 96;
+  ctx.clearRect(0,0,W,H);
+  const n = 5, ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  ctx.strokeStyle = "rgba(255,255,255,.9)"; ctx.lineWidth = 1.6;
+  for(let ring=1; ring<=4; ring++){
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){ const r = R*ring/4, a = ang(i%n); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){ const a=ang(i%n); const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  ctx.setLineDash([4,5]); ctx.strokeStyle = "rgba(255,255,255,.8)";
+  for(let i=0;i<n;i++){ const a=ang(i); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*Math.cos(a), cy+R*Math.sin(a)); ctx.stroke(); }
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){ const v = Math.max(0.06, values[i%n]/5), r = R*v, a = ang(i%n); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath();
+  const g = ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);
+  g.addColorStop(0,"rgba(92,201,126,.55)"); g.addColorStop(1,"rgba(242,123,160,.55)");
+  ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = "#E06D92"; ctx.lineWidth = 2.4; ctx.stroke();
+  for(let i=0;i<n;i++){
+    const a = ang(i), x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    ctx.beginPath(); ctx.arc(x,y,5,0,7); ctx.fillStyle = ELEMENTS[i].color; ctx.fill();
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
+    const lx = cx+(R+42)*Math.cos(a), ly = cy+(R+42)*Math.sin(a);
+    ctx.fillStyle = "#3D5245"; ctx.font = "600 22px system-ui,'PingFang SC','Microsoft YaHei'";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(ELEMENTS[i].key, lx, ly-13);
+    ctx.fillStyle = "#7A8A80"; ctx.font = "17px system-ui,'PingFang SC','Microsoft YaHei'";
+    ctx.fillText(ELEMENTS[i].name, lx, ly+13);
+    ctx.fillStyle = "#E06D92"; ctx.font = "600 18px system-ui";
+    ctx.fillText(labels && labels[i] !== undefined ? labels[i] : "–", lx, ly+34);
+  }
+  ctx.fillStyle = "rgba(122,138,128,.9)"; ctx.font = "15px system-ui,'PingFang SC'";
+  ctx.fillText("记录次数", cx, cy);
+}
+
+/* ---------- poster ---------- */
+$("#btn-poster").addEventListener("click",()=>{
+  const {st} = periodStats();
+  const maxC = Math.max(1, ...ELEMENTS.map(e=>st[e.key].count));
+  const labels = ELEMENTS.map(e=>st[e.key].count);
+  const values = ELEMENTS.map(e=>st[e.key].count/maxC*5);
+  const cv = document.createElement("canvas");
+  cv.width = 900; cv.height = 1300;
+  const ctx = cv.getContext("2d");
+  const bg = ctx.createLinearGradient(0,0,900,1300);
+  bg.addColorStop(0,"#CBFCC0"); bg.addColorStop(.55,"#F2ECCF"); bg.addColorStop(1,"#F9B2C0");
+  ctx.fillStyle = bg; ctx.fillRect(0,0,900,1300);
+  ctx.fillStyle = "rgba(255,255,255,.28)";
+  ctx.beginPath(); ctx.arc(140,220,180,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(780,1050,220,0,7); ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,.75)";
+  roundRect(ctx,70,90,760,1060,44); ctx.fill();
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#E06D92"; ctx.font = "600 44px system-ui,'PingFang SC','Microsoft YaHei'";
+  ctx.fillText("幸せのPERMA", 450, 185);
+  ctx.fillStyle = "#9C6272"; ctx.font = "24px system-ui,'PingFang SC'";
+  ctx.fillText("把幸福装进玻璃瓶", 450, 230);
+  ctx.fillStyle = "#7A8A80"; ctx.font = "22px system-ui,'PingFang SC'";
+  const d = new Date();
+  ctx.fillText(d.getFullYear()+" 年 "+(d.getMonth()+1)+" 月 "+d.getDate()+" 日 · 近 "+reportDays+" 天幸福平衡轮", 450, 278);
+  const cx=450, cy=640, R=200, n=5;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  ctx.strokeStyle = "rgba(203,252,192,.9)"; ctx.lineWidth = 2;
+  for(let ring=1; ring<=4; ring++){
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){ const r=R*ring/4,a=ang(i%n); i?ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)); }
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){ const v=Math.max(0.06,values[i%n]/5), r=R*v, a=ang(i%n); i?ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)); }
+  ctx.closePath();
+  const rg = ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);
+  rg.addColorStop(0,"rgba(92,201,126,.6)"); rg.addColorStop(1,"rgba(242,123,160,.6)");
+  ctx.fillStyle = rg; ctx.fill();
+  ctx.strokeStyle = "#E06D92"; ctx.lineWidth = 4; ctx.stroke();
+  ELEMENTS.forEach((e,i)=>{
+    const a = ang(i), x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    ctx.beginPath(); ctx.arc(x,y,8,0,7); ctx.fillStyle = e.color; ctx.fill();
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 3; ctx.stroke();
+    const lx = cx+(R+58)*Math.cos(a), ly = cy+(R+52)*Math.sin(a);
+    ctx.fillStyle = "#3D5245"; ctx.font = "600 28px system-ui,'PingFang SC'";
+    ctx.fillText(e.key+" "+e.name, lx, ly);
+    ctx.fillStyle = "#E06D92"; ctx.font = "600 24px system-ui";
+    ctx.fillText(labels[i], lx, ly+34);
+  });
+  ctx.fillStyle = "#3D5245"; ctx.font = "26px system-ui,'PingFang SC'";
+  ctx.fillText("每周的形状都在变，像慢慢结晶的宝石。", 450, 1010);
+  ctx.fillStyle = "#9C6272"; ctx.font = "20px system-ui,'PingFang SC'";
+  ctx.fillText("幸福，是每天收集的五片光 ✨", 450, 1056);
+  const a = document.createElement("a");
+  a.download = "幸せのPERMA-幸福平衡轮.png";
+  a.href = cv.toDataURL("image/png");
+  a.click();
+  showToast("海报已生成，正在保存 🖼");
+});
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+/* ---------- backup export ---------- */
+/* ---------- backup / install / PWA ---------- */
+$("#btn-export").addEventListener("click",()=>{
+  const blob = new Blob([JSON.stringify({app:"perma",exportedAt:new Date().toISOString(),posts},null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "perma-backup-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  showToast("备份已导出 💾");
+});
+$("#btn-import").addEventListener("click",()=>$("#import-file").click());
+$("#import-file").addEventListener("change",e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const data = JSON.parse(reader.result);
+      const arr = Array.isArray(data) ? data : (Array.isArray(data.posts) ? data.posts : null);
+      if(!arr) throw new Error("bad format");
+      let added = 0;
+      arr.forEach(p=>{
+        if(p && p.id && Array.isArray(p.entries) && !posts.some(x=>x.id===p.id)){ posts.push(p); added++; }
+      });
+      savePosts(); renderHome();
+      showToast(added ? ("导入完成，新增 "+added+" 颗玻璃珠 🫙") : "备份里的玻璃珠都已存在");
+    }catch(err){ showToast("文件格式不对，导入失败"); }
+    e.target.value = "";
+  };
+  reader.readAsText(f,"utf-8");
+});
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault(); deferredPrompt = e;
+  $("#btn-install").style.display = "block";
+});
+$("#btn-install").addEventListener("click",async()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome} = await deferredPrompt.userChoice;
+  if(outcome === "accepted") showToast("已添加到桌面 ✨");
+  deferredPrompt = null;
+  $("#btn-install").style.display = "none";
+});
+window.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+if("serviceWorker" in navigator && (location.protocol==="https:" || ["localhost","127.0.0.1"].includes(location.hostname))){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+renderHome();
+</script>
+</body>
+</html>
