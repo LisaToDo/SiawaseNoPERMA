@@ -1,4 +1,4 @@
-const CACHE = "perma-cache-v1";
+const CACHE = "perma-cache-v2";
 const ASSETS = [
   "./",
   "./index.html",
